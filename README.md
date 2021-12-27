@@ -15,6 +15,7 @@ This plugin is not provided nor supported by PubNub. It was implemented part of 
 * Push notifications
 * Status 
 * Error handling
+* Message actions
 
 **IMPORTANT NOTES**:
 
@@ -32,8 +33,6 @@ PNConfig features:
 ## Getting Started
 
 The plugin follows as much as possible the naming conventions PubNub exposes via their respective iOS and Android SDK.
-
-Note: version 0.2.0 had a bug related to missing proguard rules, causing crashes when the library was initialized.
 
 ## Easy setup
 
@@ -64,6 +63,7 @@ PubNubConfig(this.publishKey, this.subscribeKey, {this.authKey, this.presenceTim
 * [Retrieve history](#Retrieve-history)
 * [Push Notifications](#Push-Notifications)
 * [Signals](#Signals)
+* [Message actions](#Message-actions)
 * [Cleanup](#Cleanup)
 
 ## Creating one or more clients
@@ -196,6 +196,8 @@ _client.onPresenceReceived.listen((presence) => print('Presence:${presence.toStr
 
 _client.onMessageReceived.listen((message) => print('Message:$message'));
 
+_client.onMessageActionReceived.listen((messageAction) => print('Message:$messageAction'));
+
 _client.onErrorReceived.listen((error) => print('Error:$error'));
 
 ```
@@ -319,7 +321,25 @@ Signals allow to send small payloads (30 bytes max) in a very efficient and cost
 _client.signal(['Channel2'], {'signal': 'Hello Signal'});
 
 ```
+## Message actions
 
+With the Message Actions feature, you can add actions to messages that are already published. These actions can be useful for delivery acknowledgments, read receipts, and reactions such as emojis. You can provide any custom reaction as long as it's a string. 
+
+React to message actions:
+
+``` dart
+
+_client.onMessageActionReceived.listen((messageAction) => print('Message:$messageAction'));
+
+```
+
+Add message actions. Note the timeToken, such value is returned in each message publishing and used in PubNub as the message identifier:
+
+``` dart
+
+_client.addMessageAction(['Channel2'], timeToken, 'myActionType', 'myActionValue');
+
+```
 
 ## Cleanup
 
